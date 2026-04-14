@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKR-планування — Анкета учасника</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #F0F4FA;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(13,43,85,0.10);
+    width: 100%;
+    max-width: 720px;
+    overflow: hidden;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: #E8F2FF;
+    height: 6px;
+  }
+  .progress-bar {
+    background: #1A56A0;
+    height: 6px;
+    transition: width 0.4s ease;
+  }
+
+  /* Screen header */
+  .screen-header {
+    padding: 24px 32px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-badge {
+    background: #1A56A0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 4px 14px;
+    white-space: nowrap;
+  }
+  .step-badge.green  { background: #1A6B3C; }
+  .step-badge.orange { background: #D9600A; }
+  .step-badge.navy   { background: #0D2B55; }
+
+  .step-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0D2B55;
+  }
+
+  /* Body */
+  .screen-body { padding: 24px 32px 32px; }
+
+  /* Previous answer box */
+  .prev-answer {
+    background: #E8F2FF;
+    border-left: 4px solid #1A56A0;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+  .prev-answer.green  { background: #E6F5EE; border-color: #1A6B3C; }
+  .prev-answer.orange { background: #FFF3E8; border-color: #D9600A; }
+  .prev-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #5A6472;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .prev-text {
+    font-size: 15px;
+    color: #0D2B55;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  /* Question */
+  .question {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0D2B55;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .hint {
+    font-size: 14px;
+    color: #5A6472;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .hint li { margin-left: 18px; margin-bottom: 4px; }
+
+  /* Inputs */
+  textarea, input[type="text"] {
+    width: 100%;
+    border: 2px solid #C0CDE0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: #0D2B55;
+    resize: vertical;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #1A56A0;
+  }
+  textarea { min-height: 80px; }
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1A56A0;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .field-label.green  { color: #1A6B3C; }
+  .field-label.orange { color: #D9600A; }
+
+  .field-group { margin-bottom: 16px; }
+
+  /* Example box */
+  .example {
+    background: #F4F6F9;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #5A6472;
+    line-height: 1.7;
+  }
+  .example .bad  { color: #B22B2B; }
+  .example .good { color: #1A6B3C; font-weight: 600; }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    color: #fff;
+  }
+  .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-blue   { background: #1A56A0; }
+  .btn-green  { background: #1A6B3C; }
+  .btn-orange { background: #D9600A; }
+  .btn-navy   { background: #0D2B55; }
+  .btn-gray   { background: #5A6472; }
+
+  /* Conditional section */
+  .conditional {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px dashed #C0CDE0;
+  }
+  .conditional.visible { display: block; }
+
+  /* Final OKR card */
+  .okr-final { border: 2px solid #0D2B55; border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+  .okr-final-header {
+    background: #0D2B55;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 20px;
+  }
+  .okr-final-body { padding: 20px; }
+  .okr-section { margin-bottom: 18px; }
+  .okr-section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .okr-section-label.gray   { color: #5A6472; }
+  .okr-section-label.green  { color: #1A6B3C; }
+  .okr-section-label.blue   { color: #1A56A0; }
+  .okr-section-label.orange { color: #D9600A; }
+  .okr-value {
+    font-size: 15px;
+    color: #0D2B55;
+    line-height: 1.6;
+    background: #F4F6F9;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+  .note-final {
+    font-size: 13px;
+    color: #5A6472;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* Sending state */
+  .sending { text-align: center; padding: 40px; color: #5A6472; font-size: 16px; }
+
+  /* Hidden */
+  .screen { display: none; }
+  .screen.active { display: block; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <!-- SCREEN 0: Name -->
+  <div class="screen active" id="s0">
+    <div class="screen-header">
+      <span class="step-badge">Початок</span>
+      <span class="step-title">Вітаємо на OKR-сесії</span>
+    </div>
+    <div class="screen-body">
+      <p class="hint" style="margin-bottom:20px">Ця анкета допоможе Вам сформулювати чернетку OKR для Вашого навчального закладу. Заповнюйте послідовно — кожна відповідь стає основою для наступного кроку.</p>
+      <div class="field-group">
+        <label class="field-label">Ваше ім'я та назва закладу</label>
+        <input type="text" id="name" placeholder="Наприклад: Іваненко О.В. / Будівельний коледж м. Київ">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-blue" onclick="goTo(1)">Розпочати →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: Problem -->
+  <div class="screen" id="s1">
+    <div class="screen-header">
+      <span class="step-badge">Екран 1 з 12</span>
+      <span class="step-title">Проблема</span>
+    </div>
+    <div class="screen-body">
+      <p class="question">Сформулюйте проблему Вашого навчального закладу</p>
+      <ul class="hint">
+        <li>Що зараз не працює? Напишіть одним реченням — без прикрас.</li>
+        <li>Якщо проблем кілька — оберіть ту, що болить найбільше прямо зараз.</li>
+      </ul>
+      <textarea id="problem" placeholder="Наприклад: Викладачі не мотивовані впроваджувати зміни..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-blue" onclick="goTo(2)">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Problem concrete? -->
+  <div class="screen" id="s2">
+    <div class="screen-header">
+      <span class="step-badge">Екран 2 з 12</span>
+      <span class="step-title">Перевірка проблеми</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer">
+        <div class="prev-label">Ви написали</div>
+        <div class="prev-text" id="show_problem"></div>
+      </div>
+      <p class="question">Чи конкретна ця проблема?</p>
+      <ul class="hint">
+        <li>Можна навести приклад з минулого місяця?</li>
+        <li>Зрозуміло хто саме страждає від цієї проблеми?</li>
+        <li>Зрозуміло що конкретно не працює?</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="skipRefine()">Так, проблема конкретна →</button>
+        <button class="btn btn-orange" onclick="showRefine()">Ні, хочу уточнити →</button>
+      </div>
+      <div class="conditional" id="refineBlock">
+        <div class="field-group">
+          <label class="field-label">Уточніть проблему:</label>
+          <textarea id="problemV2" placeholder="Уточнене формулювання..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-blue" onclick="goTo(3)">Далі →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Desired state -->
+  <div class="screen" id="s3">
+    <div class="screen-header">
+      <span class="step-badge">Екран 3 з 12</span>
+      <span class="step-title">Бажаний стан</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer">
+        <div class="prev-label">Ваша проблема</div>
+        <div class="prev-text" id="show_problem2"></div>
+      </div>
+      <p class="question">Тепер уявіть: рік минув і проблема вирішена.</p>
+      <ul class="hint">
+        <li>Як поводяться люди у Вашому закладі інакше?</li>
+        <li>Опишіть конкретно — що робить викладач, здобувач, адміністрація.</li>
+        <li>Не що Ви зробили — а що змінилося для них.</li>
+      </ul>
+      <textarea id="state" placeholder="Наприклад: Викладачі самі пропонують нові підходи і методи..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-blue" onclick="goTo(4)">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Formulate state -->
+  <div class="screen" id="s4">
+    <div class="screen-header">
+      <span class="step-badge">Екран 4 з 12</span>
+      <span class="step-title">Формулювання стану</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer">
+        <div class="prev-label">Ви написали</div>
+        <div class="prev-text" id="show_state"></div>
+      </div>
+      <p class="question">Тепер перетворимо це на стан.</p>
+      <div class="example">
+        Стан — це не те що Ви робите, а те яким став Ваш заклад.<br><br>
+        <span class="bad">✗ Замість: «Ми впровадили цифрові інструменти»</span><br>
+        <span class="good">✓ Стан: «Заклад, де технології замінили рутину»</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Завершіть речення:</label>
+        <input type="text" id="stateV2" placeholder="«Заклад, де...»  або  «Навчальний заклад, який...»">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-blue" onclick="goTo(5)">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: Objective check -->
+  <div class="screen" id="s5">
+    <div class="screen-header">
+      <span class="step-badge">Екран 5 з 12</span>
+      <span class="step-title">Перевірка Objective</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer">
+        <div class="prev-label">Ви написали</div>
+        <div class="prev-text" id="show_stateV2"></div>
+      </div>
+      <p class="question">Перевірте своє формулювання за трьома критеріями:</p>
+      <ul class="hint">
+        <li>Є цифра? («на 20%», «вдвічі») → приберіть, це буде KR</li>
+        <li>Є дієслово-дія? («провести», «забезпечити», «організувати») → замініть на стан</li>
+        <li>Зрозуміло без пояснень будь-якому працівнику закладу?</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="setObjective(); goTo(6)">Так, це мій Objective →</button>
+        <button class="btn btn-orange" onclick="showObjectiveFix()">Ні, хочу виправити →</button>
+      </div>
+      <div class="conditional" id="objectiveFixBlock">
+        <div class="field-group">
+          <label class="field-label">Виправте формулювання:</label>
+          <input type="text" id="objectiveFix" placeholder="«Заклад, де...»">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-blue" onclick="setObjectiveFix(); goTo(6)">Далі →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: Key Results -->
+  <div class="screen" id="s6">
+    <div class="screen-header">
+      <span class="step-badge green">Екран 6 з 12</span>
+      <span class="step-title">Key Results — перші версії</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer green">
+        <div class="prev-label">Ваш Objective</div>
+        <div class="prev-text" id="show_objective"></div>
+      </div>
+      <p class="question">Як Ви дізнаєтесь через рік, що Objective досягнутий?</p>
+      <ul class="hint">
+        <li>Напишіть 3 докази які можна виміряти.</li>
+        <li>Поки без цифр — просто що змінюється.</li>
+      </ul>
+      <div class="field-group">
+        <label class="field-label green">KR1</label>
+        <textarea id="kr1" placeholder="Наприклад: Кількість ініціатив від викладачів..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label green">KR2</label>
+        <textarea id="kr2" placeholder="Наприклад: Кількість реалізованих проєктів..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label green">KR3</label>
+        <textarea id="kr3" placeholder="Наприклад: eNPS педагогічної команди..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="goTo(7)">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 7: Result or action? -->
+  <div class="screen" id="s7">
+    <div class="screen-header">
+      <span class="step-badge green">Екран 7 з 12</span>
+      <span class="step-title">Результат чи дія?</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer green">
+        <div class="prev-label">Ваш Objective</div>
+        <div class="prev-text" id="show_objective2"></div>
+      </div>
+      <div class="prev-answer green">
+        <div class="prev-label">Ваші KR</div>
+        <div class="prev-text" id="show_krs"></div>
+      </div>
+      <p class="question">Перевірте кожен KR — це результат чи дія?</p>
+      <div class="example">
+        KR — це не те що Ви робите, а те що змінюється у світі після того як Ви попрацювали.<br><br>
+        <span class="bad">✗ Провести 10 зустрічей з роботодавцями</span><br>
+        <span class="good">✓ 8 роботодавців підписали угоди про практику</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="copyKRs(); goTo(8)">Так, це результати →</button>
+        <button class="btn btn-orange" onclick="showKRfix()">Ні, хочу виправити →</button>
+      </div>
+      <div class="conditional" id="krFixBlock">
+        <div class="field-group">
+          <label class="field-label green">KR1 (виправлений)</label>
+          <textarea id="kr1v2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label green">KR2 (виправлений)</label>
+          <textarea id="kr2v2"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label green">KR3 (виправлений)</label>
+          <textarea id="kr3v2"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="goTo(8)">Далі →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: Numbers -->
+  <div class="screen" id="s8">
+    <div class="screen-header">
+      <span class="step-badge green">Екран 8 з 12</span>
+      <span class="step-title">Додайте цифри</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer green">
+        <div class="prev-label">Ваш Objective</div>
+        <div class="prev-text" id="show_objective3"></div>
+      </div>
+      <div class="prev-answer green">
+        <div class="prev-label">Ваші KR</div>
+        <div class="prev-text" id="show_krs2"></div>
+      </div>
+      <p class="question">Додайте цифри до кожного KR.</p>
+      <ul class="hint">
+        <li>Формат: від ___ до ___ до ___ (дата)</li>
+        <li>Не знаєте базову цифру? Напишіть «уточнити» — але пам'ятайте: без цифри KR не працює.</li>
+      </ul>
+      <div class="field-group">
+        <label class="field-label green">KR1 з цифрами</label>
+        <input type="text" id="kr1nums" placeholder="від ___ до ___ до ___ (дата)">
+      </div>
+      <div class="field-group">
+        <label class="field-label green">KR2 з цифрами</label>
+        <input type="text" id="kr2nums" placeholder="від ___ до ___ до ___ (дата)">
+      </div>
+      <div class="field-group">
+        <label class="field-label green">KR3 з цифрами</label>
+        <input type="text" id="kr3nums" placeholder="від ___ до ___ до ___ (дата)">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="goTo(9)">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 9: Final KR check -->
+  <div class="screen" id="s9">
+    <div class="screen-header">
+      <span class="step-badge green">Екран 9 з 12</span>
+      <span class="step-title">Фінальна перевірка KR</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer green">
+        <div class="prev-label">Ваш Objective</div>
+        <div class="prev-text" id="show_objective4"></div>
+      </div>
+      <div class="prev-answer green">
+        <div class="prev-label">Ваші KR з цифрами</div>
+        <div class="prev-text" id="show_krs3"></div>
+      </div>
+      <p class="question">Фінальна перевірка.</p>
+      <p class="hint">Уявіть: через рік Ви виконали всі три KR. Ваш Objective досягнутий?</p>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="goTo(10)">Так, однозначно →</button>
+        <button class="btn btn-orange" onclick="showAddKR()">Потрібно додати KR →</button>
+        <button class="btn btn-orange" onclick="showReplaceKR()">Потрібно замінити KR →</button>
+      </div>
+      <div class="conditional" id="addKRblock">
+        <div class="field-group">
+          <label class="field-label green">KR4 (додатковий)</label>
+          <input type="text" id="kr4" placeholder="від ___ до ___ до ___ (дата)">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="goTo(10)">Далі →</button>
+        </div>
+      </div>
+      <div class="conditional" id="replaceKRblock">
+        <div class="field-group">
+          <label class="field-label green">KR1 (відредагований)</label>
+          <input type="text" id="kr1fix" placeholder="">
+        </div>
+        <div class="field-group">
+          <label class="field-label green">KR2 (відредагований)</label>
+          <input type="text" id="kr2fix" placeholder="">
+        </div>
+        <div class="field-group">
+          <label class="field-label green">KR3 (відредагований)</label>
+          <input type="text" id="kr3fix" placeholder="">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="applyKRfix(); goTo(10)">Далі →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 10: Ambitious? -->
+  <div class="screen" id="s10">
+    <div class="screen-header">
+      <span class="step-badge green">Екран 10 з 12</span>
+      <span class="step-title">Амбітність</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer green">
+        <div class="prev-label">Ваш Objective</div>
+        <div class="prev-text" id="show_objective5"></div>
+      </div>
+      <div class="prev-answer green">
+        <div class="prev-label">Ваші KR</div>
+        <div class="prev-text" id="show_krs4"></div>
+      </div>
+      <p class="question">Перевірте амбітність.</p>
+      <p class="hint">Якщо Ваша команда працює як зазвичай — досягнете цих цифр?</p>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="copyAmbitiousKRs(); goTo(11)">Ні, це амбітно →</button>
+        <button class="btn btn-orange" onclick="showAmbitiousBlock()">Так, це реально →</button>
+      </div>
+      <div class="conditional" id="ambitiousBlock">
+        <p class="hint" style="margin-bottom:12px">Підніміть планку — відредагуйте цифри:</p>
+        <div class="field-group">
+          <label class="field-label green">KR1 — нова цифра</label>
+          <input type="text" id="kr1ambitious" placeholder="від ___ до ___ до ___ (дата)">
+        </div>
+        <div class="field-group">
+          <label class="field-label green">KR2 — нова цифра</label>
+          <input type="text" id="kr2ambitious" placeholder="від ___ до ___ до ___ (дата)">
+        </div>
+        <div class="field-group">
+          <label class="field-label green">KR3 — нова цифра</label>
+          <input type="text" id="kr3ambitious" placeholder="від ___ до ___ до ___ (дата)">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="goTo(11)">Далі →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 11: Initiatives -->
+  <div class="screen" id="s11">
+    <div class="screen-header">
+      <span class="step-badge orange">Екран 11 з 12</span>
+      <span class="step-title">Initiatives</span>
+    </div>
+    <div class="screen-body">
+      <div class="prev-answer green">
+        <div class="prev-label">Ваш Objective</div>
+        <div class="prev-text" id="show_objective6"></div>
+      </div>
+      <div class="prev-answer green">
+        <div class="prev-label">Ваші KR</div>
+        <div class="prev-text" id="show_krs5"></div>
+      </div>
+      <p class="question">Чудово — Objective і Key Results готові. Тепер — Initiatives.</p>
+      <ul class="hint">
+        <li>Для кожного KR напишіть 2–3 конкретні дії які допоможуть досягти цифри.</li>
+        <li>Пишіть швидко — аналізувати будемо потім.</li>
+      </ul>
+      <div class="field-group">
+        <label class="field-label orange">Initiatives до KR1</label>
+        <textarea id="init1" placeholder="Наприклад: Клуб інноваторів; навчання за вибором викладача..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label orange">Initiatives до KR2</label>
+        <textarea id="init2" placeholder="Наприклад: Hackathon ідей; партнерства з роботодавцями..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label orange">Initiatives до KR3</label>
+        <textarea id="init3" placeholder="Наприклад: Щомісячне опитування; публічне визнання..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-orange" onclick="goTo(12)">Далі →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 12: Final OKR -->
+  <div class="screen" id="s12">
+    <div class="screen-header">
+      <span class="step-badge navy">Екран 12 з 12</span>
+      <span class="step-title">Ваш чернетковий OKR готовий</span>
+    </div>
+    <div class="screen-body">
+      <div class="okr-final">
+        <div class="okr-final-header">🎯 Ваш OKR</div>
+        <div class="okr-final-body">
+          <div class="okr-section">
+            <div class="okr-section-label gray">Проблема</div>
+            <div class="okr-value" id="final_problem"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label green">Objective</div>
+            <div class="okr-value" id="final_objective"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label blue">KR1</div>
+            <div class="okr-value" id="final_kr1"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label blue">KR2</div>
+            <div class="okr-value" id="final_kr2"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label blue">KR3</div>
+            <div class="okr-value" id="final_kr3"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label orange">Initiatives до KR1</div>
+            <div class="okr-value" id="final_init1"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label orange">Initiatives до KR2</div>
+            <div class="okr-value" id="final_init2"></div>
+          </div>
+          <div class="okr-section">
+            <div class="okr-section-label orange">Initiatives до KR3</div>
+            <div class="okr-value" id="final_init3"></div>
+          </div>
+        </div>
+      </div>
+      <p class="note-final">Це чернетка. Наступний крок — обговорити з командою і доопрацювати разом.</p>
+      <div class="btn-row">
+        <button class="btn btn-navy" onclick="submitAndPrint()">Зберегти як PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .card -->
+
+<script>
+// ── REPLACE THIS WITH YOUR APPS SCRIPT WEB APP URL ──────────────────────────
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyceZ8htsIwBQY9FayDW23BZ2V3Ijzbue4qICoGLxytNgvbu3bvJkMbvtdnKLPDxeTF3g/exec";
+// ─────────────────────────────────────────────────────────────────────────────
+
+const data = {
+  name:"", problem:"", problemV2:"", state:"", stateV2:"",
+  objective:"", kr1:"", kr2:"", kr3:"",
+  kr1v2:"", kr2v2:"", kr3v2:"",
+  kr1nums:"", kr2nums:"", kr3nums:"",
+  kr4:"", kr1ambitious:"", kr2ambitious:"", kr3ambitious:"",
+  init1:"", init2:"", init3:""
+};
+
+let currentScreen = 0;
+const totalScreens = 12;
+
+function goTo(n) {
+  // Save current values
+  saveCurrentData();
+
+  // Hide all
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+  // Show target
+  document.getElementById('s' + n).classList.add('active');
+  currentScreen = n;
+
+  // Update progress
+  document.getElementById('progressBar').style.width = ((n / totalScreens) * 100) + '%';
+
+  // Populate display fields
+  populateScreen(n);
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+function saveCurrentData() {
+  const fields = ['name','problem','problemV2','state','stateV2','objectiveFix',
+    'kr1','kr2','kr3','kr1v2','kr2v2','kr3v2',
+    'kr1nums','kr2nums','kr3nums','kr4','kr1fix','kr2fix','kr3fix',
+    'kr1ambitious','kr2ambitious','kr3ambitious','init1','init2','init3'];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value.trim()) data[id] = el.value.trim();
+  });
+}
+
+function getFinalProblem() {
+  return data.problemV2 || data.problem;
+}
+
+function getFinalKR(n) {
+  const numKey = 'kr'+n+'nums';
+  const fixKey = 'kr'+n+'fix';
+  const v2Key  = 'kr'+n+'v2';
+  const base   = 'kr'+n;
+  if (data[numKey]) return data[numKey];
+  if (data[fixKey]) return data[fixKey];
+  if (data[v2Key])  return data[v2Key];
+  return data[base] || '';
+}
+
+function getFinalKRs() {
+  return [getFinalKR(1), getFinalKR(2), getFinalKR(3)].filter(Boolean).join('\n');
+}
+
+function populateScreen(n) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
+
+  if (n === 2) set('show_problem',  data.problem);
+  if (n === 3) set('show_problem2', getFinalProblem());
+  if (n === 4) set('show_state',    data.state);
+  if (n === 5) set('show_stateV2',  data.stateV2);
+
+  if (n === 6) set('show_objective', data.objective);
+  if (n === 7) {
+    set('show_objective2', data.objective);
+    set('show_krs', `KR1: ${data.kr1}\nKR2: ${data.kr2}\nKR3: ${data.kr3}`);
+    // Pre-fill fix fields with current KR values
+    ['kr1v2','kr2v2','kr3v2'].forEach((id,i) => {
+      const el = document.getElementById(id);
+      if (el && !el.value) el.value = data['kr'+(i+1)] || '';
+    });
+  }
+  if (n === 8) {
+    set('show_objective3', data.objective);
+    set('show_krs2', `KR1: ${getFinalKR(1)}\nKR2: ${getFinalKR(2)}\nKR3: ${getFinalKR(3)}`);
+  }
+  if (n === 9) {
+    set('show_objective4', data.objective);
+    set('show_krs3', `KR1: ${data.kr1nums}\nKR2: ${data.kr2nums}\nKR3: ${data.kr3nums}`);
+    // Pre-fill fix fields
+    ['kr1fix','kr2fix','kr3fix'].forEach((id,i) => {
+      const el = document.getElementById(id);
+      if (el && !el.value) el.value = data['kr'+(i+1)+'nums'] || '';
+    });
+  }
+  if (n === 10) {
+    set('show_objective5', data.objective);
+    set('show_krs4', `KR1: ${getFinalKR(1)}\nKR2: ${getFinalKR(2)}\nKR3: ${getFinalKR(3)}`);
+  }
+  if (n === 11) {
+    set('show_objective6', data.objective);
+    set('show_krs5', `KR1: ${getFinalKR(1)}\nKR2: ${getFinalKR(2)}\nKR3: ${getFinalKR(3)}`);
+  }
+  if (n === 12) {
+    set('final_problem',    getFinalProblem());
+    set('final_objective',  data.objective);
+    set('final_kr1',        getFinalKR(1));
+    set('final_kr2',        getFinalKR(2));
+    set('final_kr3',        getFinalKR(3));
+    set('final_init1',      data.init1);
+    set('final_init2',      data.init2);
+    set('final_init3',      data.init3);
+    sendToSheets();
+  }
+}
+
+function skipRefine() {
+  data.problemV2 = '';
+  goTo(3);
+}
+
+function showRefine() {
+  document.getElementById('refineBlock').classList.add('visible');
+}
+
+function showObjectiveFix() {
+  document.getElementById('objectiveFixBlock').classList.add('visible');
+}
+
+function setObjective() {
+  data.objective = data.stateV2;
+}
+
+function setObjectiveFix() {
+  saveCurrentData();
+  data.objective = data.objectiveFix || data.stateV2;
+}
+
+function showKRfix() {
+  document.getElementById('krFixBlock').classList.add('visible');
+}
+
+function copyKRs() {
+  if (!data.kr1v2) data.kr1v2 = data.kr1;
+  if (!data.kr2v2) data.kr2v2 = data.kr2;
+  if (!data.kr3v2) data.kr3v2 = data.kr3;
+}
+
+function showAddKR() {
+  document.getElementById('replaceKRblock').classList.remove('visible');
+  document.getElementById('addKRblock').classList.add('visible');
+}
+
+function showReplaceKR() {
+  document.getElementById('addKRblock').classList.remove('visible');
+  document.getElementById('replaceKRblock').classList.add('visible');
+}
+
+function applyKRfix() {
+  saveCurrentData();
+  if (data.kr1fix) data.kr1nums = data.kr1fix;
+  if (data.kr2fix) data.kr2nums = data.kr2fix;
+  if (data.kr3fix) data.kr3nums = data.kr3fix;
+}
+
+function showAmbitiousBlock() {
+  document.getElementById('ambitiousBlock').classList.add('visible');
+  // Pre-fill with current nums
+  ['kr1ambitious','kr2ambitious','kr3ambitious'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    if (el && !el.value) el.value = data['kr'+(i+1)+'nums'] || '';
+  });
+}
+
+function copyAmbitiousKRs() {
+  if (!data.kr1ambitious) data.kr1ambitious = data.kr1nums;
+  if (!data.kr2ambitious) data.kr2ambitious = data.kr2nums;
+  if (!data.kr3ambitious) data.kr3ambitious = data.kr3nums;
+}
+
+async function sendToSheets() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('ВСТАВТЕ')) return;
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:         data.name,
+        problem:      data.problem,
+        problemV2:    data.problemV2,
+        state:        data.state,
+        stateV2:      data.stateV2,
+        objective:    data.objective,
+        kr1:          data.kr1,
+        kr2:          data.kr2,
+        kr3:          data.kr3,
+        kr1v2:        data.kr1v2,
+        kr2v2:        data.kr2v2,
+        kr3v2:        data.kr3v2,
+        kr1nums:      data.kr1nums,
+        kr2nums:      data.kr2nums,
+        kr3nums:      data.kr3nums,
+        kr4:          data.kr4,
+        kr1ambitious: data.kr1ambitious,
+        kr2ambitious: data.kr2ambitious,
+        kr3ambitious: data.kr3ambitious,
+        init1:        data.init1,
+        init2:        data.init2,
+        init3:        data.init3,
+      })
+    });
+  } catch(e) { console.log('Sheets send error:', e); }
+}
+
+function submitAndPrint() {
+  window.print();
+}
+</script>
+</body>
+</html>
