@@ -701,8 +701,6 @@
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2TK0diAyAf9bWBIz7f8xWWEFLOKf9ZTbQOJnU8YHHKr9veA25Gzs73rmOYWsCOS1ohw/exec";
 // ─────────────────────────────────────────────────────────────────────────────
 
-let rowId = null; // зберігає ID рядка в Sheets
-
 const data = {
   name:"", problem:"", problemV2:"", state:"", stateV2:"",
   objective:"", kr1:"", kr2:"", kr3:"",
@@ -888,42 +886,35 @@ function copyAmbitiousKRs() {
 async function sendToSheets() {
   if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('ВСТАВТЕ')) return;
   try {
-    const payload = {
-      rowId:        rowId,
-      name:         data.name,
-      problem:      data.problem,
-      problemV2:    data.problemV2,
-      state:        data.state,
-      stateV2:      data.stateV2,
-      objective:    data.objective,
-      kr1:          data.kr1,
-      kr2:          data.kr2,
-      kr3:          data.kr3,
-      kr1v2:        data.kr1v2,
-      kr2v2:        data.kr2v2,
-      kr3v2:        data.kr3v2,
-      kr1nums:      data.kr1nums,
-      kr2nums:      data.kr2nums,
-      kr3nums:      data.kr3nums,
-      kr4:          data.kr4,
-      kr1ambitious: data.kr1ambitious,
-      kr2ambitious: data.kr2ambitious,
-      kr3ambitious: data.kr3ambitious,
-      init1:        data.init1,
-      init2:        data.init2,
-      init3:        data.init3,
-    };
-
-    const response = await fetch(APPS_SCRIPT_URL, {
+    await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        name:         data.name,
+        problem:      data.problem,
+        problemV2:    data.problemV2,
+        state:        data.state,
+        stateV2:      data.stateV2,
+        objective:    data.objective,
+        kr1:          data.kr1,
+        kr2:          data.kr2,
+        kr3:          data.kr3,
+        kr1v2:        data.kr1v2,
+        kr2v2:        data.kr2v2,
+        kr3v2:        data.kr3v2,
+        kr1nums:      data.kr1nums,
+        kr2nums:      data.kr2nums,
+        kr3nums:      data.kr3nums,
+        kr4:          data.kr4,
+        kr1ambitious: data.kr1ambitious,
+        kr2ambitious: data.kr2ambitious,
+        kr3ambitious: data.kr3ambitious,
+        init1:        data.init1,
+        init2:        data.init2,
+        init3:        data.init3,
+      })
     });
-
-    const result = await response.json();
-    if (result.rowId && !rowId) {
-      rowId = result.rowId; // зберігаємо ID після першого запиту
-    }
   } catch(e) { console.log('Sheets send error:', e); }
 }
 
